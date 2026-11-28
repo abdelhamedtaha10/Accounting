@@ -51,8 +51,8 @@ details details>*{margin-inline-start:14px}.lf{color:var(--tx)}.hh{font-size:12p
 @media (prefers-reduced-motion:reduce){#lg *{animation:none!important}}
 </style></head><body>
 <header><div><h1 dir="ltr">Accounting System</h1><div class="st" id="info">No file uploaded yet</div></div>
-<div><input type="file" id="fi" accept=".xlsx,.xls,.xlsm" hidden><button class="btn" id="bup" onclick="fi.click()">Upload File</button> <button class="btn" onclick="pdf()">Export PDF</button> <button class="btn" id="bdel" onclick="delData()">Delete Data</button> <span class="st" id="who"></span> <button class="btn" onclick="auth().signOut()">Logout</button></div></header>
-<nav id="nv"><button data-t="db" class="on">Dashboard</button><button data-t="tree">Chart of Accounts</button><button data-t="jr">Journal Entries</button><button data-t="tb">Trial Balance</button><button data-t="rp">Reports</button><button data-t="fs">Financial Statements</button><button data-t="us" id="nus" style="display:none">Users</button></nav>
+<div><input type="file" id="fi" accept=".xlsx,.xls,.xlsm" hidden><button class="btn" id="bup" onclick="fi.click()">Upload File</button> <button class="btn" onclick="pdf()">Export PDF</button> <button class="btn" onclick="xl()">Export Excel</button> <button class="btn" id="bdel" onclick="delData()">Delete Data</button> <span class="st" id="who"></span> <button class="btn" onclick="auth().signOut()">Logout</button></div></header>
+<nav id="nv"><button data-t="db" class="on">Dashboard</button><button data-t="tree">Chart of Accounts</button><button data-t="jr">Journal Entries</button><button data-t="tb">Trial Balance</button><button data-t="rp">Reports</button><button data-t="fs">Financial Statements</button><button data-t="fr">Financial Ratios</button><button data-t="us" id="nus" style="display:none">Users</button></nav>
 <main>
 <section class="scr" id="s-tree"><div class="bar"><button class="btn" onclick="TRA='all';render()">Expand All</button><button class="btn" onclick="TRA='none';render()">Collapse All</button><label>بحث في الحسابات<input id="tq" oninput="TRA='';render()" placeholder="رقم أو اسم الحساب"></label></div><div class="box" id="o-tree"></div></section>
 <section class="scr" id="s-jr"><div class="bar"><label>من تاريخ<input type="date" id="jf" onchange="render()"></label><label>إلى تاريخ<input type="date" id="jt" onchange="render()"></label><label>بحث (رقم القيد / بيان / طرف / حساب)<input id="jq" oninput="render()"></label></div><div class="st" id="jc" style="margin:0 2px 8px"></div><div class="box" id="o-jr"></div></section>
@@ -60,9 +60,10 @@ details details>*{margin-inline-start:14px}.lf{color:var(--tx)}.hh{font-size:12p
 <label>مستوى العرض<select id="tl" onchange="render()"><option value="tree">هرمي (توسيع / تضييق)</option><option value="acc">الحسابات الفرعية</option><option value="grp">المجموعات</option><option value="nat">طبيعة الحساب</option><option value="main">الحسابات الرئيسية</option></select></label>
 <button class="btn" onclick="TBA='all';render()">Expand All</button><button class="btn" onclick="TBA='none';render()">Collapse All</button>
 <label><span><input type="checkbox" id="tz" checked onchange="render()" style="min-width:0"> إخفاء الأرصدة الصفرية</span></label></div><div class="box" id="o-tb"></div></section>
-<section class="scr" id="s-rp"><div class="bar"><label style="flex:1;min-width:220px">بحث (اسم حساب / عميل / مورد / طرف / مركز تكلفة)<input id="rq" oninput="rq()" onkeydown="if(event.key==='Enter')rpick(0)" placeholder="اكتب جزئاً من الاسم أو الرقم" style="width:100%"></label><div id="rqr" style="flex-basis:100%"></div><label>التقرير<select id="rt" onchange="fillRS()"><option value="ledger">حساب الأستاذ (رئيسي حتى فرعي)</option><option value="cust">كشف حساب العملاء</option><option value="supp">كشف حساب الموردين</option><option value="party">كشف حساب حسب الطرف (مورد / عميل / شريك)</option><option value="center">كشف حساب مركز تكلفة / ربحية</option><option value="nca">سجل الأصول غير المتداولة</option></select></label>
+<section class="scr" id="s-rp"><div class="bar"><label style="flex:1;min-width:220px">بحث (اسم حساب / عميل / مورد / طرف / مركز تكلفة)<input id="rq" oninput="rq()" onkeydown="if(event.key==='Enter')rpick(0)" placeholder="اكتب جزئاً من الاسم أو الرقم" style="width:100%"></label><div id="rqr" style="flex-basis:100%"></div><label>التقرير<select id="rt" onchange="fillRS()"><option value="ledger">حساب الأستاذ (رئيسي حتى فرعي)</option><option value="cust">كشف حساب العملاء</option><option value="supp">كشف حساب الموردين</option><option value="party">كشف حساب حسب الطرف (مورد / عميل / شريك)</option><option value="center">كشف حساب مركز تكلفة / ربحية</option><option value="nca">سجل الأصول غير المتداولة</option><option value="dep">جدول إهلاك الأصول الثابتة</option></select></label>
 <label id="l-rs">الحساب<select id="rs" onchange="render()"></select></label><label id="l-rp" style="display:none">اسم الطرف<input id="rp" list="pl" onchange="render()"><datalist id="pl"></datalist></label>
 <label>من تاريخ<input type="date" id="rf" onchange="render()"></label><label>إلى تاريخ<input type="date" id="rto" onchange="render()"></label></div><div id="o-rp"></div></section>
+<section class="scr" id="s-fr"><div class="bar"><label>من تاريخ<input type="date" id="qf" onchange="render()"></label><label>إلى تاريخ (الأرصدة كما في)<input type="date" id="qt" onchange="render()"></label><label>مقارنة: من<input type="date" id="qcf" onchange="render()"></label><label>مقارنة: إلى<input type="date" id="qct" onchange="render()"></label></div><div id="o-fr"></div></section>
 <section class="scr" id="s-fs"><div class="bar"><label>اسم المنشأة<input id="fco" oninput="render()"></label><label>من تاريخ<input type="date" id="ff" onchange="render()"></label><label>إلى تاريخ (المركز المالي كما في)<input type="date" id="ft" onchange="render()"></label><label>مقارنة: من<input type="date" id="fcf" onchange="render()"></label><label>مقارنة: إلى<input type="date" id="fct" onchange="render()"></label><label>عرض قائمة الدخل<select id="fm" onchange="render()"><option value="all">موحد (إجمالي المنشأة)</option><option value="one">مركز تكلفة / ربحية واحد</option><option value="cols">أعمدة بجميع المراكز</option></select></label><label>المركز<select id="fx" onchange="render()"></select></label><label>طريقة التدفقات النقدية<select id="fcm" onchange="render()"><option value="indirect">الطريقة غير المباشرة</option><option value="direct">الطريقة المباشرة</option><option value="both">كلاهما</option></select></label><button class="btn" onclick="fsAsk()">معدلات تحميل «عام»</button></div><div id="o-fs"></div></section>
 <section class="scr on" id="s-db"><div class="bar"><label>من تاريخ<input type="date" id="df" onchange="render()"></label><label>إلى تاريخ<input type="date" id="dt" onchange="render()"></label><label>البند للتحليل التفصيلي<select id="dm" onchange="DB.g=null;render()"><option value="exp">Expenses</option><option value="cost">Cost of Revenue</option><option value="rev">Revenue</option><option value="cash">Cash &amp; Cash Equivalents</option></select></label><label>مركز التكلفة / الربحية<select id="dc" onchange="DB.g=null;render()"></select></label><label><span><input type="checkbox" id="dal" onchange="this.checked?fsAsk():render()" style="min-width:0"> تحميل «عام» على المراكز (بالنسب المحددة في القوائم المالية)</span></label><button class="btn" onclick="fsAsk()">معدلات تحميل «عام»</button><span class="st">اضغط على أي بطاقة أو شريحة في الرسوم الدائرية لتصفية التحليل</span></div><div id="o-db"></div></section>
 <section class="scr" id="s-us"><div id="o-us"></div></section></main><div id="lg"></div><div id="md"><div class="mdb" id="mdb"></div></div>
@@ -99,14 +100,14 @@ function build(acc,lines,name){S.cf=null;S.name=name;S.acc=acc;S.lines=lines;S.b
  S.tree=T;S.nodes=[];
  for(const m of Object.values(T)){S.nodes.push({l:m.k+' - '+m.l,lv:0,a:flat(m)});for(const n of Object.values(m.ch)){S.nodes.push({l:n.l,lv:1,a:flat(n)});for(const g of Object.values(n.ch)){S.nodes.push({l:g.l,lv:2,a:flat(g)});for(const a of Object.values(g.ch))S.nodes.push({l:a.no+' - '+a.name,lv:3,a:[a]})}}}
  const mn=lines[0].t,mx=lines[lines.length-1].t;
- for(const id of['jf','tf','rf','ff','df'])$('#'+id).value=mn;for(const id of['jt','tt','rto','ft','dt'])$('#'+id).value=mx;
+ for(const id of['jf','tf','rf','ff','df','qf'])$('#'+id).value=mn;for(const id of['jt','tt','rto','ft','dt','qt'])$('#'+id).value=mx;
  $('#pl').innerHTML=[...new Set(lines.map(l=>l.p).filter(Boolean))].sort().map(p=>`<option value="${esc(p)}">`).join('');
  $('#info').textContent=`${name} — ${new Set(lines.map(l=>l.e)).size} قيد، ${lines.length} سطر، ${Object.keys(acc).length} حساب (${mn} إلى ${mx})`;
  S.cc=[...new Set(lines.map(l=>l.c).filter(Boolean))].sort((a,b)=>a==='عام'?1:b==='عام'?-1:a.localeCompare(b));S.blank=lines.some(l=>!l.c&&'456'.includes(S.acc[l.a].main));FSA.done=false;$('#dc').innerHTML='<option value="*">جميع المراكز</option>'+S.cc.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')+(S.blank?'<option value="">غير موزع</option>':'');$('#fx').innerHTML=S.cc.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')+(S.blank?'<option value="">غير موزع</option>':'');
  fillRS();}
 nv.onclick=e=>{const t=e.target.dataset.t;if(!t)return;tab=t;if(t==='fs')FSA.done=false;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b===e.target));document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==='s-'+t));render()};
 const none='<div class="msg">Upload File — ارفع ملف الإكسيل أولاً</div>';
-function render(){if(!S.lines.length&&tab!=='us'){$('#o-'+tab).innerHTML=none;return}({tree:rTree,jr:rJr,tb:rTb,rp:rRp,fs:rFs,db:rDb,us:rUs})[tab]()}
+function render(){if(!S.lines.length&&tab!=='us'){$('#o-'+tab).innerHTML=none;return}({tree:rTree,jr:rJr,tb:rTb,rp:rRp,fs:rFs,db:rDb,fr:rFr,us:rUs})[tab]()}
 const cells=t=>`<b>${f2(t.d)}</b><b>${f2(t.c)}</b><b>${bal(t.d-t.c)}</b>`;
 function tn(n,q,lv){
  if(n.no){if(q&&!(n.no+' '+n.name).includes(q))return'';return`<div class="r lf"><span>${n.no} - ${esc(n.name)}</span>${cells(tot([n]))}</div>`}
@@ -137,6 +138,7 @@ function rTb(){
  $('#o-tb').innerHTML=h+`<div class="msg ${ok?'':'bad'}">${ok?'الميزان متوازن':'الميزان غير متوازن — راجع القيود'}</div>`}
 function fillRS(){const t=$('#rt').value,s=$('#rs');$('#l-rs').style.display=t==='party'?'none':'';$('#l-rp').style.display=t==='party'?'':'none';
  if(t==='ledger')s.innerHTML=S.nodes.map((n,i)=>`<option value="${i}">${'\u00a0\u00a0\u00a0'.repeat(n.lv)}${esc(n.l)}</option>`).join('');
+ else if(t==='dep')s.innerHTML='<option value="item">بالبند</option><option value="grp">بالتصنيف</option>';
  else if(t==='nca')s.innerHTML='<option value="sum">ملخص بالبند (Summary)</option><option value="det">تفصيلي بالقيود (Detailed)</option>';
  else if(t==='center')s.innerHTML=S.cc.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')+(S.blank?'<option value="">غير موزع</option>':'');
  else if(t!=='party'){const g=t==='cust'?'العملاء':'الموردين';s.innerHTML='<option value="all">جميع '+g+' (ملخص)</option>'+Object.values(S.acc).filter(a=>a.grp.includes(g)).map(a=>`<option value="${a.no}">${a.no} - ${esc(a.name)}</option>`).join('')}
@@ -152,6 +154,7 @@ function rRp(){
  const t=$('#rt').value,s=$('#rs').value,f=$('#rf').value,to=$('#rto').value;let h='';
  if(t==='ledger'){const n=S.nodes[+s];if(n)h=`<h3>${esc(n.l)}</h3><div class="box">${stmt(lns(n.a),f,to,n.a.length>1)}</div>`}
  else if(t==='nca'){h=ncaRep(s,f,to)}
+ else if(t==='dep'){h=depRep(s,f,to)}
  else if(t==='center'){h=`<h3>مركز: ${s===''?'غير موزع':esc(s)}</h3><div class="box">${stmt(S.lines.filter(l=>l.c===s&&S.acc[l.a].main>'3'),f,to,true)}</div>`}
  else if(t==='party'){const p=$('#rp').value.trim();h=p?`<h3>${esc(p)}</h3><div class="box">${stmt(S.lines.filter(l=>l.p===p),f,to,true)}</div>`:'<div class="msg">اختر اسم الطرف</div>'}
  else if(s==='all'){const A=Object.values(S.acc).filter(a=>a.grp.includes(t==='cust'?'العملاء':'الموردين'));let T=[0,0,0,0];
@@ -161,7 +164,7 @@ function rRp(){
   h+=`<tr class="tot"><td>الإجمالي</td><td class="n">${bal(T[0])}</td><td class="n">${f2(T[1])}</td><td class="n">${f2(T[2])}</td><td class="n">${bal(T[3])}</td></tr></tbody></table></div>`}
  else h=`<h3>${s} - ${esc(S.acc[s].name)}</h3><div class="box">${stmt(S.by[s]||[],f,to,false)}</div>`;
  $('#o-rp').innerHTML=h}
-function pdf(){const n={tree:'Chart of Accounts',jr:'Journal Entries',tb:'Trial Balance',rp:'Reports',fs:'Financial Statements',db:'Dashboard'}[tab],o=document.title;document.title=n;let ps=$('#pgs');if(!ps){ps=document.createElement('style');ps.id='pgs';document.head.appendChild(ps)}ps.textContent='@page{size:A4 '+(['fs','db','tree'].includes(tab)?'portrait':'landscape')+';margin:8mm}';try{window.print()}catch(e){alert('تعذر فتح نافذة الطباعة، استخدم Ctrl+P ثم اختر الحفظ كـ PDF')}document.title=o}
+function pdf(){const n={tree:'Chart of Accounts',jr:'Journal Entries',tb:'Trial Balance',rp:'Reports',fs:'Financial Statements',db:'Dashboard',fr:'Financial_Ratios'}[tab],o=document.title;document.title=n;let ps=$('#pgs');if(!ps){ps=document.createElement('style');ps.id='pgs';document.head.appendChild(ps)}ps.textContent='@page{size:A4 '+(['fs','db','tree'].includes(tab)?'portrait':'landscape')+';margin:8mm}';try{window.print()}catch(e){alert('تعذر فتح نافذة الطباعة، استخدم Ctrl+P ثم اختر الحفظ كـ PDF')}document.title=o}
 window.onbeforeprint=()=>document.querySelectorAll('details').forEach(d=>d.open=true);
 const fm=n=>n===''?'':Math.abs(n)<0.005?'-':n<0?'('+f2(-n)+')':f2(n);
 const CFAR={operating:'التشغيل',investing:'الاستثمار',financing:'التمويل'};
@@ -286,12 +289,12 @@ function ncaRep(mode,f,to){
    h+=`<tr class="tot"><td colspan="3">إجمالي ${esc(g)}</td><td class="n">${f2(sd)}</td><td class="n">${f2(sc)}</td><td class="n">${fm(sd-sc)}</td></tr>`;GD+=sd;GC+=sc}}
  h+=det?`<tr class="tot"><td colspan="5">الإجمالي العام</td><td class="n">${fm(GD)}</td></tr>`:`<tr class="tot"><td colspan="3">الإجمالي العام</td><td class="n">${f2(GD)}</td><td class="n">${f2(GC)}</td><td class="n">${fm(GD-GC)}</td></tr>`;
  return h+'</tbody></table></div>'}
-const auth=()=>firebase.auth(),db=()=>firebase.firestore(),em=u=>u.trim().toLowerCase()+'@acc.local',SC=[['db','Dashboard'],['tree','Chart of Accounts'],['jr','Journal Entries'],['tb','Trial Balance'],['rp','Reports'],['fs','Financial Statements']];
+const auth=()=>firebase.auth(),db=()=>firebase.firestore(),em=u=>u.trim().toLowerCase()+'@acc.local',SC=[['db','Dashboard'],['tree','Chart of Accounts'],['jr','Journal Entries'],['tb','Trial Balance'],['rp','Reports'],['fs','Financial Statements'],['fr','Financial Ratios']];
 let ME=null;
-function wipe(){S={acc:{},by:{},lines:[],tree:{},nodes:[],cc:[],blank:false};FSA.pct=null;FSA.done=false;['tree','jr','tb','rp','fs','db','us'].forEach(k=>$('#o-'+k).innerHTML='');['dc','fx','rs','pl','rqr'].forEach(k=>$('#'+k).innerHTML='');$('#rq').value='';$('#md').style.display='none';$('#info').textContent='No file uploaded yet';Object.values(DB.ch).forEach(c=>c.destroy());DB.ch={}}
-async function persist(){if(!ME||ME.role!=='admin'||!S.lines.length)return;try{const c=db().collection('app'),N=1500,old=await c.get();let b=db().batch();old.forEach(d=>b.delete(d.ref));await b.commit();const n=Math.ceil(S.lines.length/N);b=db().batch();for(let i=0;i<n;i++)b.set(c.doc('chunk_'+i),{lines:S.lines.slice(i*N,(i+1)*N)});b.set(c.doc('meta'),{name:S.name,acc:S.acc,pct:FSA.pct||null,n,at:Date.now()});await b.commit()}catch(e){alert('Cloud save failed: '+e.message)}}
-function savePct(){if(ME&&ME.role==='admin')db().collection('app').doc('meta').update({pct:FSA.pct||null}).catch(()=>{})}
-async function restore(){const c=db().collection('app'),m=await c.doc('meta').get();if(!m.exists)return;const o=m.data(),L=[];for(let i=0;i<o.n;i++){const d=await c.doc('chunk_'+i).get();L.push(...d.data().lines)}build(o.acc,L,o.name);if(o.pct)FSA.pct=o.pct}
+function wipe(){S={acc:{},by:{},lines:[],tree:{},nodes:[],cc:[],blank:false};FSA.pct=null;FSA.rates=null;FSA.done=false;['tree','jr','tb','rp','fs','fr','db','us'].forEach(k=>$('#o-'+k).innerHTML='');['dc','fx','rs','pl','rqr'].forEach(k=>$('#'+k).innerHTML='');$('#rq').value='';$('#md').style.display='none';$('#info').textContent='No file uploaded yet';Object.values(DB.ch).forEach(c=>c.destroy());DB.ch={}}
+async function persist(){if(!ME||ME.role!=='admin'||!S.lines.length)return;try{const c=db().collection('app'),N=1500,old=await c.get();let b=db().batch();old.forEach(d=>b.delete(d.ref));await b.commit();const n=Math.ceil(S.lines.length/N);b=db().batch();for(let i=0;i<n;i++)b.set(c.doc('chunk_'+i),{lines:S.lines.slice(i*N,(i+1)*N)});b.set(c.doc('meta'),{name:S.name,acc:S.acc,pct:FSA.pct||null,rates:FSA.rates||null,n,at:Date.now()});await b.commit()}catch(e){alert('Cloud save failed: '+e.message)}}
+function savePct(){if(ME&&ME.role==='admin')db().collection('app').doc('meta').update({pct:FSA.pct||null,rates:FSA.rates||null}).catch(()=>{})}
+async function restore(){const c=db().collection('app'),m=await c.doc('meta').get();if(!m.exists)return;const o=m.data(),L=[];for(let i=0;i<o.n;i++){const d=await c.doc('chunk_'+i).get();L.push(...d.data().lines)}build(o.acc,L,o.name);if(o.pct)FSA.pct=o.pct;if(o.rates)FSA.rates=o.rates}
 async function delData(){if(!ME||ME.role!=='admin'||!confirm('\u0647\u0644 \u062a\u0631\u064a\u062f \u062d\u0630\u0641 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0645\u0646 \u0627\u0644\u0633\u062d\u0627\u0628\u0629 \u0646\u0647\u0627\u0626\u064a\u0627\u064b\u061f \u0644\u0627 \u064a\u0645\u0643\u0646 \u0627\u0644\u062a\u0631\u0627\u062c\u0639.'))return;const q=await db().collection('app').get(),b=db().batch();q.forEach(d=>b.delete(d.ref));await b.commit();wipe();render()}
 function lgUI(m){const o=$('#lg');o.style.display='flex';o.innerHTML=`<div class="bgi"></div><div class="ov"></div><svg class="ln" viewBox="0 0 1000 300" preserveAspectRatio="none"><path d="M0 280 L120 230 L220 250 L340 170 L450 195 L580 110 L690 140 L820 60 L1000 20"/></svg><div class="bars"><i style="--h:35%;animation-delay:0.0s"></i><i style="--h:55%;animation-delay:0.5s"></i><i style="--h:45%;animation-delay:1.0s"></i><i style="--h:70%;animation-delay:1.5s"></i><i style="--h:60%;animation-delay:2.0s"></i><i style="--h:85%;animation-delay:2.5s"></i><i style="--h:100%;animation-delay:3.0s"></i></div><span class="pt" style="left:8%;animation-delay:0.0s;animation-duration:8s"></span><span class="pt" style="left:18%;animation-delay:1.3s;animation-duration:10s"></span><span class="pt" style="left:30%;animation-delay:2.6s;animation-duration:12s"></span><span class="pt" style="left:42%;animation-delay:3.9000000000000004s;animation-duration:14s"></span><span class="pt" style="left:55%;animation-delay:5.2s;animation-duration:8s"></span><span class="pt" style="left:66%;animation-delay:6.5s;animation-duration:10s"></span><span class="pt" style="left:77%;animation-delay:7.800000000000001s;animation-duration:12s"></span><span class="pt" style="left:90%;animation-delay:9.1s;animation-duration:14s"></span><div class="mdb" dir="ltr" style="width:340px"><h2 style="margin:0 0 8px">Accounting System</h2><div class="tag">Financial Management &amp; Reporting</div><label>Username<input id="lu" autocomplete="username" style="width:100%"></label><label style="margin-top:6px">Password<input id="lp" type="password" autocomplete="current-password" style="width:100%"></label><div id="lm" class="bad" style="margin:6px 0">${esc(m||'')}</div><button class="btn" style="width:100%" onclick="doLogin()">Sign in</button></div>`;['lu','lp'].forEach(i=>$('#'+i).onkeydown=e=>{if(e.key==='Enter')doLogin()});$('#lu').focus()}
 async function doLogin(){const m=$('#lm');m.textContent='';try{await auth().signInWithEmailAndPassword(em($('#lu').value),$('#lp').value)}catch(e){m.textContent=e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':'Invalid username or password'}}
@@ -310,6 +313,103 @@ async function delUser(id){const u=USR[id];if(!u||u.role==='admin'||!confirm('De
 function pwUser(id){const u=USR[id];$('#mdb').innerHTML=`<div dir="ltr"><h3>Change password: ${esc(u.username)}</h3><p class="st">Enter the current password of this user and the new one.</p><label>Current password<input id="pc0" type="password" style="width:100%"></label><label>New password (6+)<input id="pc1" type="password" style="width:100%"></label><div id="pcm" class="bad"></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn" onclick="pwSave('${id}')">Save</button><button class="btn" style="background:var(--mu)" onclick="$('#md').style.display='none'">Close</button></div></div>`;$('#md').style.display='flex'}
 async function pwSave(id){const u=USR[id],m=$('#pcm'),n=$('#pc1').value;if(n.length<6){m.textContent='New password must be at least 6 characters';return}
  const a2=firebase.apps.find(x=>x.name==='sec')||firebase.initializeApp(window.FIREBASE_CONFIG,'sec');try{const r=await a2.auth().signInWithEmailAndPassword(em(u.username),$('#pc0').value);await r.user.updatePassword(n);await a2.auth().signOut();$('#md').style.display='none';alert('Password changed')}catch(e){m.textContent=(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password')?'Current password is incorrect':e.message}}
+function xlClean(t){const c=t.cloneNode(true);c.querySelectorAll('td,th').forEach(td=>{const raw=td.textContent.replace(/\u00a0/g,' ');let y=raw.replace(/\s+$/,'');
+ if(td.classList.contains('n')){const x=raw.trim(),ng=/^\((.*)\)$/.exec(x),s=ng?ng[1]:x,m=/^(-?[\d,]+(?:\.\d+)?)\s*([\u0645\u062f])?$/.exec(s);
+  if(x==='-')y='0';else if(m){let v=parseFloat(m[1].replace(/,/g,''));if(ng)v=-v;if(m[2]==='\u062f')v=-v;y=String(v)}}
+ if(/^\d{4}-\d{2}-\d{2}$/.test(y))td.setAttribute('data-t','s');td.textContent=y});return c}
+function xlParts(el,o){for(const c of el.children){const g=c.tagName;if(g==='TABLE')o.push({t:'tbl',el:c});
+ else if(/^H[2-5]$/.test(g)||g==='P'||c.classList.contains('fh')){const k=c.cloneNode(true);k.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));k.textContent.split('\n').forEach(x=>{const v=x.replace(/\u00a0/g,' ').trim();if(v)o.push({t:'txt',v})})}
+ else if(g==='DIV'&&!c.classList.contains('msg')&&!c.classList.contains('st'))xlParts(c,o)}return o}
+function xlSheet(parts){const ws={},tx=new Set();let r=0;
+ for(const p of parts){if(p.t==='txt'){XLSX.utils.sheet_add_aoa(ws,[[p.v]],{origin:{r,c:0}});tx.add(r);r++}else{const c=xlClean(p.el);XLSX.utils.sheet_add_dom(ws,c,{origin:{r,c:0},raw:false});r+=c.rows.length+1}}
+ const w=[];for(const k in ws){if(k[0]==='!')continue;const a=XLSX.utils.decode_cell(k);if(tx.has(a.r))continue;const L=String(ws[k].v==null?'':ws[k].v).length;if(!(w[a.c]>=L))w[a.c]=L}
+ ws['!cols']=Array.from(w,x=>({wch:Math.min(60,Math.max(8,(x||0)+2))}));return ws}
+function xl(){
+ const root=$('#o-'+tab);if(!root||!root.querySelector('table')){alert('No table to export on this screen.');return}
+ const wb=XLSX.utils.book_new(),used=new Set(),NM={tree:'Chart_of_Accounts',jr:'Journal_Entries',tb:'Trial_Balance',rp:'Report',fs:'Financial_Statements',db:'Dashboard',fr:'Financial_Ratios'};wb.Workbook={Views:[{RTL:true}]};
+ const add=(nm,parts)=>{let n=(nm||'Sheet').replace(/[\\\/?*\[\]:]/g,' ').trim().slice(0,28)||'Sheet',k=n,i=2;while(used.has(k))k=n.slice(0,25)+' '+i++;used.add(k);XLSX.utils.book_append_sheet(wb,xlSheet(parts),k)};
+ if(tab==='fs'){root.querySelectorAll('.fh').forEach(h=>{const b=h.nextElementSibling;if(!b||!b.querySelector('table'))return;const T=h.textContent;
+   add(T.includes('\u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0627\u0644\u064a')?'\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0627\u0644\u064a':T.includes('\u0627\u0644\u062a\u062f\u0641\u0642\u0627\u062a')?(T.includes('\u063a\u064a\u0631 \u0627\u0644\u0645\u0628\u0627\u0634\u0631\u0629')?'\u0627\u0644\u062a\u062f\u0641\u0642\u0627\u062a (\u063a\u064a\u0631 \u0645\u0628\u0627\u0634\u0631\u0629)':'\u0627\u0644\u062a\u062f\u0641\u0642\u0627\u062a (\u0645\u0628\u0627\u0634\u0631\u0629)'):'\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062f\u062e\u0644',xlParts(h.parentNode===root?{children:[h,b]}:{children:[h,b]},[]))});
+  const fn=root.querySelector('.fn');if(fn)add('\u0627\u0644\u0625\u064a\u0636\u0627\u062d\u0627\u062a',xlParts(fn,[]))}
+ else{const o=$('#rt'),nm=tab==='rp'&&o&&o.selectedOptions[0]?o.selectedOptions[0].textContent:NM[tab];add(tab==='jr'?'\u0642\u064a\u0648\u062f \u0627\u0644\u064a\u0648\u0645\u064a\u0629':tab==='tb'?'\u0645\u064a\u0632\u0627\u0646 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629':nm,xlParts(root,[]))}
+ const RN={ledger:'General_Ledger',cust:'Customer_Statements',supp:'Supplier_Statements',party:'Party_Statement',center:'Cost_Center_Statement',nca:'Non_Current_Assets',dep:'Depreciation_Schedule'};XLSX.writeFile(wb,(tab==='rp'&&$('#rt')?RN[$('#rt').value]||NM.rp:NM[tab])+'_'+new Date().toISOString().slice(0,10)+'.xlsx')}
+const NCAA=()=>Object.values(S.acc).filter(a=>a.main==='1'&&a.nat.includes('غير متداولة'));
+function depAsk(){const gs=[...new Set(NCAA().map(a=>a.grp))];FSA.dg=gs;
+ $('#mdb').innerHTML=`<h3>نسب الإهلاك السنوية (القسط الثابت)</h3><p class="st">أدخل نسبة الإهلاك السنوية حسب سياسة المنشأة لكل تصنيف. القيمة المبدئية 10% للتجربة فقط، والمشروعات تحت التنفيذ 0% لأنها لا تُهلك قبل جاهزيتها للاستخدام.</p>${gs.map((g,i)=>`<label style="display:flex;gap:8px;align-items:center;margin:4px 0"><span style="flex:1">${esc(g)}</span><input type="number" step="0.01" min="0" max="100" id="dr${i}" value="${(FSA.rates&&FSA.rates[g]!=null)?FSA.rates[g]:(/تحت التنفيذ/.test(g)?0:10)}" style="min-width:80px;width:90px"> %</label>`).join('')}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn" onclick="depOk()">اعتماد</button><button class="btn" style="background:var(--mu)" onclick="$('#md').style.display='none'">إغلاق</button></div>`;$('#md').style.display='flex'}
+function depOk(){FSA.rates={};FSA.dg.forEach((g,i)=>FSA.rates[g]=+$('#dr'+i).value||0);$('#md').style.display='none';typeof savePct==='function'?savePct():persist();render()}
+function depCalc(a,rate,f,to){
+ const DY=86400000,day=s=>Date.parse(s)/DY,L=(S.by[a.no]||[]).filter(l=>!to||l.t<=to),end=day(to||S.lines[S.lines.length-1].t),sf=f?day(f):null;
+ let bal=0,acc=0,last=null,a0=0,c0=0,seen=!f,add=0,dis=0,dAcc=0,first='';
+ const adv=d=>{if(last!==null&&bal>0&&d>last)acc+=bal*rate/100*(d-last)/365;if(last===null||d>last)last=d};
+ for(const l of L){const d=day(l.t);if(!seen&&d>=sf){adv(sf);a0=acc;c0=bal;seen=true}adv(d);const n=l.dr-l.cr;
+  if(n>0){bal+=n;if(!first)first=l.t;if(!f||d>=sf)add+=n}
+  else if(n<0){const c=-n,sh=bal>0?Math.min(1,c/bal):0;if(!f||d>=sf){dis+=c;dAcc+=acc*sh}acc*=1-sh;bal=Math.max(0,bal-c)}}
+ if(!seen){adv(sf);a0=acc;c0=bal}
+ adv(end);return{first,o:c0,add,dis,c:bal,ao:a0,ch:acc+dAcc-a0,ad:dAcc,ac:acc,nbv:bal-acc}}
+function depRep(mode,f,to){
+ if(!FSA.rates){depAsk();return'<div class="msg">يلزم تحديد نسب الإهلاك أولاً</div>'}
+ const R=[],K=['o','add','dis','c','ao','ch','ad','ac','nbv'];
+ for(const a of NCAA()){const x=depCalc(a,FSA.rates[a.grp]||0,f,to);if(K.every(k=>Math.abs(x[k])<0.005))continue;R.push({a,x})}
+ if(!R.length)return'<div class="msg">لا توجد أصول غير متداولة</div>';
+ const G={};R.forEach(r=>(G[r.a.grp]=G[r.a.grp]||[]).push(r));
+ const cl=(x)=>K.map(k=>`<td class="n">${fm(x[k])}</td>`).join(''),sm=rs=>{const t={};K.forEach(k=>t[k]=rs.reduce((s,r)=>s+r.x[k],0));return t};
+ let h=`<h3>جدول إهلاك الأصول الثابتة</h3><p>الإهلاك بطريقة القسط الثابت على أساس يومي من تاريخ كل إضافة وبدون قيمة خردة، وتُستبعد حصة الأصل المستبعد من مجمع الإهلاك نسبياً. المشروعات تحت التنفيذ لا تُهلك.</p><div class="st" style="margin:4px"><span class="lk" onclick="depAsk()">تعديل نسب الإهلاك</span></div><div class="box"><table><thead><tr><th rowspan="2">تاريخ الاقتناء</th><th rowspan="2">البند</th><th rowspan="2">المعدل %</th><th colspan="4" class="n">التكلفة</th><th colspan="4" class="n">مجمع الإهلاك</th><th rowspan="2" class="n">صافي القيمة الدفترية</th></tr><tr><th class="n">أول المدة</th><th class="n">إضافات</th><th class="n">استبعادات</th><th class="n">آخر المدة</th><th class="n">أول المدة</th><th class="n">إهلاك الفترة</th><th class="n">استبعادات</th><th class="n">آخر المدة</th></tr></thead><tbody>`,all=[];
+ for(const g of Object.keys(G)){const rs=G[g];h+=`<tr class="sub"><td colspan="13">${esc(g)}</td></tr>`;all.push(...rs);
+  if(mode==='grp')continue;
+  for(const r of rs)h+=`<tr><td class="dt">${r.x.first}</td><td>${r.a.no} - ${esc(r.a.name)}</td><td class="n">${FSA.rates[g]||0}</td>${cl(r.x)}</tr>`;
+  h+=`<tr class="tot"><td colspan="3">إجمالي ${esc(g)}</td>${cl(sm(rs))}</tr>`}
+ if(mode==='grp')h=h.replace(/<tr class="sub"><td colspan="13">([^<]*)<\/td><\/tr>/g,'');
+ if(mode==='grp')for(const g of Object.keys(G))h+=`<tr><td></td><td>${esc(g)}</td><td class="n">${FSA.rates[g]||0}</td>${cl(sm(G[g]))}</tr>`;
+ return h+`<tr class="tot"><td colspan="3">الإجمالي العام</td>${cl(sm(all))}</tr></tbody></table></div>`}
+function frCalc(f,t){
+ const A=Object.values(S.acc),F=f||S.lines[0].t,T=t||S.lines[S.lines.length-1].t,days=(Date.parse(T)-Date.parse(F))/864e5+1,
+ bal=(L,sg)=>{const x=tot(L,'',T);return sg*(x.d-x.c)},per=L=>{const x=tot(L,F,T);return-(x.d-x.c)},
+ g=(m,fn)=>A.filter(a=>a.main===m&&(!fn||fn(a))),cashA=A.filter(a=>CASHRX.test(a.grp)),
+ ca=g('1',a=>!a.nat.includes('غير متداولة')),nca=g('1',a=>a.nat.includes('غير متداولة')),cl=g('2',a=>!a.nat.includes('طويلة')),ll=g('2',a=>a.nat.includes('طويلة')),
+ R=per(g('4')),C=-per(g('5')),E=-per(g('6')),ga=-per(g('6',a=>!a.grp.includes('خسائر'))),GP=R-C,OP=GP-ga,NP=GP-E,
+ CA=bal(ca,1),TA=CA+bal(nca,1),CL=bal(cl,-1),TL=CL+bal(ll,-1),EQ=bal(g('3'),-1)+bal(A.filter(a=>a.main>='4'),-1),
+ INV=bal(g('1',a=>/مخزون/.test(a.grp)),1),CASH=bal(cashA,1),CU=bal(A.filter(a=>a.grp.includes('العملاء')),1),SU=bal(A.filter(a=>a.grp.includes('الموردين')),-1);
+ let OCF=0,ICF=0;for(const x of cfData()){if(x.t<F||x.t>T)continue;if(x.act==='op')OCF+=x.v;else if(x.act==='inv')ICF+=x.v}
+ return{days,R,C,GP,OP,E,NP,CA,TA,CL,TL,EQ,INV,CASH,CU,SU,OCF,ICF,F,T}}
+function rFr(){
+ const P=[[$('#qf').value,$('#qt').value]],cf=$('#qcf').value,ct=$('#qct').value;if(cf||ct)P.push([cf,ct]);
+ const V=P.map(p=>frCalc(p[0],p[1])),dv=(a,b)=>Math.abs(b)<0.005?null:a/b,
+ fv=(x,y)=>x==='nm'?'غير ذي دلالة':x==null||!isFinite(x)?'n/a':y==='x'?x.toFixed(2):y==='%'?(x*100).toFixed(2)+'%':y==='d'?x.toFixed(1):fm(x);
+ const RT=[['السيولة (Liquidity)',[
+  ['نسبة التداول (Current Ratio)','الأصول المتداولة ÷ الالتزامات المتداولة',v=>dv(v.CA,v.CL),'x'],
+  ['نسبة السيولة السريعة (Quick Ratio)','(الأصول المتداولة − المخزون) ÷ الالتزامات المتداولة',v=>dv(v.CA-v.INV,v.CL),'x'],
+  ['نسبة النقدية (Cash Ratio)','النقدية وما في حكمها ÷ الالتزامات المتداولة',v=>dv(v.CASH,v.CL),'x'],
+  ['صافي رأس المال العامل (Working Capital)','الأصول المتداولة − الالتزامات المتداولة',v=>v.CA-v.CL,'n']]],
+ ['الربحية (Profitability)',[
+  ['هامش مجمل الربح (Gross Margin)','مجمل الربح ÷ الإيرادات',v=>dv(v.GP,v.R),'%'],
+  ['هامش الربح التشغيلي (Operating Margin)','ربح التشغيل ÷ الإيرادات',v=>dv(v.OP,v.R),'%'],
+  ['هامش صافي الربح (Net Margin)','صافي الربح ÷ الإيرادات',v=>dv(v.NP,v.R),'%'],
+  ['العائد على الأصول (ROA)','صافي الربح ÷ إجمالي الأصول (آخر المدة)',v=>dv(v.NP,v.TA),'%'],
+  ['العائد على حقوق الملكية (ROE)','صافي الربح ÷ حقوق الملكية (آخر المدة)',v=>v.EQ>0?dv(v.NP,v.EQ):'nm','%'],
+  ['نسبة التكلفة إلى الإيرادات','تكلفة الإيرادات ÷ الإيرادات',v=>dv(v.C,v.R),'%'],
+  ['نسبة المصروفات إلى الإيرادات','المصروفات ÷ الإيرادات',v=>dv(v.E,v.R),'%']]],
+ ['المديونية والهيكل المالي (Leverage)',[
+  ['الالتزامات إلى حقوق الملكية (Debt to Equity)','إجمالي الالتزامات ÷ حقوق الملكية',v=>v.EQ>0?dv(v.TL,v.EQ):'nm','x'],
+  ['نسبة المديونية (Debt Ratio)','إجمالي الالتزامات ÷ إجمالي الأصول',v=>dv(v.TL,v.TA),'%'],
+  ['نسبة حقوق الملكية (Equity Ratio)','حقوق الملكية ÷ إجمالي الأصول',v=>dv(v.EQ,v.TA),'%'],
+  ['الالتزامات المتداولة إلى إجمالي الالتزامات','الالتزامات المتداولة ÷ إجمالي الالتزامات',v=>dv(v.CL,v.TL),'%']]],
+ ['النشاط (Efficiency)',[
+  ['معدل دوران الأصول (Asset Turnover)','الإيرادات ÷ إجمالي الأصول (للفترة دون تسنية)',v=>dv(v.R,v.TA),'x'],
+  ['متوسط فترة التحصيل (DSO) - يوم','رصيد العملاء ÷ الإيرادات × أيام الفترة',v=>v.CU<0?'nm':dv(v.CU,v.R)==null?null:v.CU/v.R*v.days,'d'],
+  ['متوسط فترة السداد (DPO) - يوم','رصيد الموردين ÷ تكلفة الإيرادات × أيام الفترة',v=>v.SU<0?'nm':dv(v.SU,v.C)==null?null:v.SU/v.C*v.days,'d'],
+  ['معدل دوران المخزون (Inventory Turnover)','تكلفة الإيرادات ÷ المخزون',v=>dv(v.C,v.INV),'x'],
+  ['أيام المخزون (DIO) - يوم','المخزون ÷ تكلفة الإيرادات × أيام الفترة',v=>dv(v.INV,v.C)==null?null:v.INV/v.C*v.days,'d']]],
+ ['التدفقات النقدية (Cash Flow)',[
+  ['صافي النقدية من الأنشطة التشغيلية (OCF)','من قائمة التدفقات النقدية',v=>v.OCF,'n'],
+  ['التدفق التشغيلي إلى الالتزامات المتداولة','OCF ÷ الالتزامات المتداولة',v=>dv(v.OCF,v.CL),'x'],
+  ['جودة الأرباح (OCF إلى صافي الربح)','OCF ÷ صافي الربح',v=>dv(v.OCF,v.NP),'x'],
+  ['التدفق النقدي الحر التقريبي','OCF + صافي النقدية الاستثمارية',v=>v.OCF+v.ICF,'n']]]];
+ const hd=V.map((v,i)=>`<th class="n">${v.F} → ${v.T}</th>`).join(''),cs=V.length+2;
+ let h=`<h3>النسب المالية (Financial Ratios)</h3><p>تُحسب النسب من أرصدة آخر المدة وحركة الفترة المحددة، وتُحسب الربحية والنشاط دون تسنية. n/a تعني أن المقام صفر، و«غير ذي دلالة» تعني أن النسبة غير معبّرة (مثل حقوق الملكية السالبة أو رصيد عملاء/موردين بعكس طبيعته).</p><div class="box"><table><thead><tr><th>النسبة</th><th>طريقة الحساب</th>${hd}</tr></thead><tbody>`;
+ for(const [c,L] of RT){h+=`<tr class="sub"><td colspan="${cs}">${c}</td></tr>`;for(const [n,fx,fn,y] of L)h+=`<tr><td>${n}</td><td>${fx}</td>${V.map(v=>`<td class="n">${fv(fn(v),y)}</td>`).join('')}</tr>`}
+ const IN=[['الإيرادات','R'],['تكلفة الإيرادات','C'],['مجمل الربح','GP'],['ربح التشغيل','OP'],['المصروفات','E'],['صافي الربح (الخسارة)','NP'],['الأصول المتداولة','CA'],['إجمالي الأصول','TA'],['الالتزامات المتداولة','CL'],['إجمالي الالتزامات','TL'],['حقوق الملكية (شاملة ربح الفترة والمرحلة)','EQ'],['المخزون','INV'],['النقدية وما في حكمها','CASH'],['رصيد العملاء','CU'],['رصيد الموردين','SU'],['أيام الفترة','days']];
+ h+=`<tr class="sub"><td colspan="${cs}">البيانات المستخدمة في الحساب</td></tr>`+IN.map(([n,k])=>`<tr><td>${n}</td><td></td>${V.map(v=>`<td class="n">${k==='days'?v[k]:fm(v[k])}</td>`).join('')}</tr>`).join('');
+ $('#o-fr').innerHTML=h+'</tbody></table></div>'}
 let TRA='';
 let RQ=[];
 function rq(){const q=$('#rq').value.trim().toLowerCase(),o=$('#rqr');if(!q||!S.lines.length){o.innerHTML='';RQ=[];return}
